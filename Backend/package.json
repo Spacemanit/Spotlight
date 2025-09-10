@@ -4,7 +4,7 @@
   "description": "",
   "main": "spotlightc2c.js",
   "scripts": {
-    "dev": "nodemon spotlightc2c.js"
+    "start": "nodemon spotlightc2c.js"
   },
   "author": "",
   "license": "ISC",

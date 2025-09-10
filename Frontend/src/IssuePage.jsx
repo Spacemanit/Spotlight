@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 
 const App = () => {
+  const ip = 'http://localhost:3000';
   const [issue, setIssue] = useState({
+    title: "",
     issueType: "",
     state: "",
     address1: "",
@@ -25,7 +27,26 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Issue submitted:", issue);
-    // Here you would typically send the data to a backend API
+    const data = {title: issue.title, description: issue.description, category: issue.issueType, location: issue.address1, phone: localStorage.getItem('phone')}
+    fetch(`${ip}/issue/submit`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message == "Login Successful") {
+          console.log(data);
+          localStorage.setItem("username", data.username);
+          location = "chat.html";
+        } else {
+          alert(data.message);
+        }
+        console.log(data);
+      })
+      .catch((error) => console.error("Error:", error));
   };
   const states = [
     "Andhra Pradesh",
@@ -57,7 +78,7 @@ const App = () => {
     "Uttarakhand",
     "West Bengal",
   ];
-    const problems = [
+  const problems = [
     "Air pollution in urban areas",
     "Traffic congestion and poor road infrastructure",
     "Inconsistent electricity and water supply",
@@ -72,11 +93,12 @@ const App = () => {
     "Poverty and income inequality",
     "Access to clean drinking water",
     "Internet and digital infrastructure gaps in rural areas",
-    "Encroachment and lack of urban planning"
+    "Encroachment and lack of urban planning",
+    "Other Problem",
   ];
   return (
     <div className="min-h-screen bg-white flex items-center justify-center font-sans">
-    <h1 className="text-3xl font-bold text-[#3A364F] mb-6">Spotlight</h1>
+      <h1 className="text-3xl font-bold text-[#3A364F] mb-6">Spotlight</h1>
       <div className="bg-white p-8 md:p-12 w-full max-w-2xl rounded-lg shadow-lg">
         <div className="bg-gray-50 p-6 rounded-xl">
           <h2 className="text-xl font-semibold text-[#3A364F] mb-4">
@@ -98,13 +120,11 @@ const App = () => {
                 className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               >
                 <option value="">Select issue type</option>
-                {
-                    problems.map((problem, index) => (
-                      <option key={index} value={problem}>
-                        {problem}
-                      </option>
-                    ))
-                }
+                {problems.map((problem, index) => (
+                  <option key={index} value={problem}>
+                    {problem}
+                  </option>
+                ))}
               </select>
             </div>
 

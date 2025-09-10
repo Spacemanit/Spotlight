@@ -5,3 +5,5 @@ nodemon
 cors
 tailwindcss
 @tailwindcss/vite
+geoip
+path

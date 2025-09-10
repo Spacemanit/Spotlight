@@ -11,8 +11,10 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "geoip-lite": "^1.4.10",
     "mongodb": "^6.19.0",
     "multer": "^2.0.2",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "path": "^0.12.7"
   }
 }

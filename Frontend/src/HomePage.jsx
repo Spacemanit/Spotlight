@@ -2,7 +2,7 @@ import React from "react";
 
 const HomePage = () => {
   const openIssuePage = () => {
-    window.location.href = "/issue";
+    window.location.href = "/issue/submit/";
   };
 
   const openTrackingPage = () => {

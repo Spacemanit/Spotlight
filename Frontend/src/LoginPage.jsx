@@ -57,6 +57,7 @@ const LoginPage = () => {
 
   // Conditionally render the Home Page after successful login
   if (isLoggedIn) {
+    localStorage.setItem('phone', phoneNumber);
     window.location.href = '/homepage';
     return null;
   }

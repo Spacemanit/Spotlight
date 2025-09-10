@@ -47,23 +47,24 @@ const allowedCategories = ['Road', 'Electricity', 'Water', 'Waste'];
 
 // ========== DEFAULT ROUTE ==========
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../spotlightstorage/main.html"));
+    res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
 
 // ========== USER ROUTES ==========
 
 // Route for submitting an issue (frontend will use GET for now)
-app.get('/issue/submit', async (req, res) => {
+app.post('/issue/submit', async (req, res) => {
     const db = client.db('spotlight_db'); 
     const issuesCollection = db.collection('issues');
-
+    console.log('op')
     // Read data from query parameters
-    const { title, description, category, location, phone } = req.query;
+    const { title, description, category, location, phone } = req.body;
 
-    // Validate category
-    if (!allowedCategories.includes(category)) {
-        return res.json({ message: 'Invalid category. Allowed categories: Road, Electricity, Water, Waste' });
-    }
+    // COMMENT: NO NEED FOR THIS AS WE ARE GONNA USE PREDEFINED CATEGORIES FROM DROP DOWN MENU
+    // // Validate category
+    // if (!allowedCategories.includes(category)) {
+    //     return res.json({ message: 'Invalid category. Allowed categories: Road, Electricity, Water, Waste' });
+    // }
 
     // Generate tracking_id (unique random string)
     const tracking_id = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);

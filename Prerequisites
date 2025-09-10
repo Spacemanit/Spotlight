@@ -1,0 +1,7 @@
+express
+mongodb
+multer
+nodemon
+cors
+tailwindcss
+@tailwindcss/vite

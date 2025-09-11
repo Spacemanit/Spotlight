@@ -88,22 +88,11 @@ const App = () => {
     "West Bengal",
   ];
   const problems = [
-    "Air pollution in urban areas",
-    "Traffic congestion and poor road infrastructure",
-    "Inconsistent electricity and water supply",
-    "Lack of proper sanitation and waste management",
-    "Unemployment and underemployment",
-    "Corruption in public offices",
-    "Poor quality of public healthcare",
-    "Inaccessible and expensive education",
-    "Crime and safety concerns, especially for women",
-    "Flooding and poor drainage during monsoons",
-    "Overcrowding in public transport",
-    "Poverty and income inequality",
-    "Access to clean drinking water",
-    "Internet and digital infrastructure gaps in rural areas",
-    "Encroachment and lack of urban planning",
-    "Other Problem",
+    "Electricity",
+    "Water Supply",
+    "Roads",
+    "Sanitation",
+    "Waste Management"
   ];
 
   

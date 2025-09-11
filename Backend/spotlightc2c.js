@@ -217,8 +217,10 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
     const issuesCollection = db.collection('issues');
     const suspiciousCollection = db.collection('suspicious_issues');
 
-    const { title, description, category, location, phone } = req.body;
-
+    const { title, description, category, location, token } = req.body;
+    const phoneNumber = jwt.decode(token, KEY).phoneNumber;
+    console.log(token)
+    console.log(phoneNumber)
     // ✅ ADDED: Manually handle file saving since we use memoryStorage for EXIF parsing
     let imageUrl = null;
     let uniqueFilename = null;
@@ -253,7 +255,7 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
         location,
         imageUrl,
         status: initialStatus,
-        phone: phone || null,
+        phone: phoneNumber,
         tracking_id,
         created_at: createdAt,
         status_history: [{ status: initialStatus, changed_at: createdAt }],

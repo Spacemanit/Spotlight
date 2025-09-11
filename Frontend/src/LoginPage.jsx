@@ -79,6 +79,7 @@ const LoginPage = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        localStorage.removeItem('token');
         localStorage.setItem("token", data.token);
       })
       .catch((error) => console.error("Error:", error));

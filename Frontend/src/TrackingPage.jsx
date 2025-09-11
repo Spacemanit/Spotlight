@@ -29,7 +29,7 @@ export default function TrackingPage() {
       const issue = await response.json();
       return [issue]; // Return as array for consistency
     } catch (err) {
-      throw new Error("fetchingissuebytid"+err.message);
+      throw new Error(err.message);
     }
   };
 
@@ -42,7 +42,7 @@ export default function TrackingPage() {
       const issues = await response.json();
       return issues;
     } catch (err) {
-      throw new Error("fetchingissuebypo"+err.message);
+      throw new Error(err.message);
     }
   };
 

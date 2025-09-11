@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Admin Home</title>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Header -->
+  <header class="px-8 py-4 shadow-sm bg-white">
+    <h1 class="text-2xl font-bold text-gray-800">SpotLight</h1>
+    <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
+      <a href="sub.html" class="mr-5 hover:text-gray-900">HOME</a>
+    </nav> 
+  
+  <!-- Main Content -->
+  <main class="container mx-auto px-8 py-10">
+    
+    <!-- Title -->
+    <h2 class="text-3xl font-semibold text-center mb-10">Admin Page</h2>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="flex items-center justify-between bg-white border rounded-xl shadow-sm p-6">
+        <div>
+          <span class="text-sm text-gray-600 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span> 
+            Total reports reports
+          </span>
+          <p class="text-2xl font-bold mt-2">200</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between bg-white border rounded-xl shadow-sm p-6">
+        <div>
+          <span class="text-sm text-gray-600 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-orange-500"></span> 
+            Total pending reports
+          </span>
+          <p class="text-2xl font-bold mt-2">73</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between bg-white border rounded-xl shadow-sm p-6">
+        <div>
+          <span class="text-sm text-gray-600 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500"></span> 
+            Total completed reports
+          </span>
+          <p class="text-2xl font-bold mt-2">41</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between bg-white border rounded-xl shadow-sm p-6">
+        <div>
+          <span class="text-sm text-gray-600 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span> 
+            Total incomplete reports
+          </span>
+          <p class="text-2xl font-bold mt-2">96</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto bg-white border rounded-xl shadow-sm">
+      <table class="w-full text-left text-gray-700">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="py-3 px-5 font-semibold">Date</th>
+            <th class="py-3 px-5 font-semibold">Issue ID</th>
+            <th class="py-3 px-5 font-semibold">Type</th>
+            <th class="py-3 px-5 font-semibold">Description</th>
+            <th class="py-3 px-5 font-semibold">Zipcode</th>
+            <th class="py-3 px-5 font-semibold">Verification status</th>
+            <th class="py-3 px-5 font-semibold">Status</th>
+            <th class="py-3 px-5 font-semibold">Image</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 text-sm">
+          <tr>
+            <td class="py-3 px-5">27BR890</td>
+            <td class="py-3 px-5">0003478A</td>
+            <td class="py-3 px-5">Electricity</td>
+            <td class="py-3 px-5">Lorem Ipsum is simply dummy text of</td>
+            <td class="py-3 px-5">700068</td>
+            <td class="py-3 px-5">
+              <span class="bg-yellow-200 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium">Suspicious</span>
+            </td>
+            <td class="py-3 px-5">
+              <span class="bg-green-200 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Completed</span>
+            </td>
+            <td class="py-3 px-5 text-blue-600 font-medium cursor-pointer hover:underline">Click to view</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-5">187AAH8</td>
+            <td class="py-3 px-5">000231B</td>
+            <td class="py-3 px-5">Water</td>
+            <td class="py-3 px-5">Lorem Ipsum is simply dummy text of</td>
+            <td class="py-3 px-5">700029</td>
+            <td class="py-3 px-5">
+              <span class="bg-red-200 text-red-700 px-3 py-1 rounded-full text-xs font-medium">Rejected</span>
+            </td>
+            <td class="py-3 px-5">
+              <span class="bg-pink-200 text-pink-700 px-3 py-1 rounded-full text-xs font-medium">Incomplete</span>
+            </td>
+            <td class="py-3 px-5 text-blue-600 font-medium cursor-pointer hover:underline">Click to view</td>
+          </tr>
+          <!-- Repeat rows as needed -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Pagination -->
+    <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+      <p>Showing 8 of <span class="font-medium">200</span> entries</p>
+      <div class="flex gap-4">
+        <a href="#" class="text-gray-400 hover:text-gray-600">&lt; Last page</a>
+        <a href="#" class="text-gray-400 hover:text-gray-600">Next page &gt;</a>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

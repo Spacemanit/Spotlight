@@ -105,18 +105,20 @@ function TrackerForm({ onSearch, loading, error }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <div className="p-6">
-        <h1 className="text-2xl font-semibold text-gray-900">SpotLight</h1>
-      </div>
+    <div className="min-h-screen bg-[#FAF9FF] flex flex-col">
+    <div className="min-h-screen bg-[#FAF9FF] flex items-center justify-center font-sans">
+      <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
+  <a href="/spotlight" className="">
+    Spotlight
+  </a>
+</h1>
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-md">
           {/* Title Section */}
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-6">
+            <h2 className="text-[50px] font-bold text-[#3A364F] mb-4 ">
               Track Your Issue
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
@@ -201,7 +203,7 @@ function TrackerForm({ onSearch, loading, error }) {
           </div>
         </div>
       </div>
-    </div>
+    </div> </div>
   );
 }
 

@@ -18,10 +18,6 @@ if (!fs.existsSync(uploadDir)) {
     console.log(`✅ Created storage directory at: ${uploadDir}`);
 }
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -43,7 +39,7 @@ async function connectToDb() {
 }
 connectToDb();
 
-const KEY = 'This is just a basic secret key which is used to unlock the Json Web Token huihuihui'
+const JWT_KEY = 'This is just a basic secret key which is used to unlock the Json Web Token huihuihui'
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../Frontend/index.html"));
@@ -140,7 +136,7 @@ app.post('/verify-otp', async (req, res) => {
 });
 app.post('/login', async (req, res) => {
     const { phoneNumber } = req.body;
-    const token = jwt.sign({ phoneNumber: phoneNumber }, KEY, { expiresIn: "2w" });
+    const token = jwt.sign({ phoneNumber: phoneNumber }, JWT_KEY, { expiresIn: "10m" });
     res.json({ token });
 });
 
@@ -206,41 +202,43 @@ function verifyIssue(issue, fileBuffer) {
     return { status, reasons };
 }
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "../uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("video/")) {
+        cb(null, true);
+    } else {
+        cb(new Error("Only image and video files are allowed"), false);
+    }
+};
+
+const upload = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 20*1024*1024 }
+});
 // Submit new issue
-app.post('/issue/submit', upload.single('image'), async (req, res) => {
+app.post('/issue/submit', upload.single('images'), async (req, res) => {
     const db = client.db('spotlight_db');
     const issuesCollection = db.collection('issues');
-    const suspiciousCollection = db.collection('suspicious_issues');
 
     const { title, description, category, location, token } = req.body;
-    const phone = jwt.decode(token, KEY).phoneNumber;
-
-// EXIF PARSING
-    let imageUrl = null;
-    let uniqueFilename = null;
-    let fileMetadata = null;
-
-    if (req.file) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        uniqueFilename = uniqueSuffix + '-' + req.file.originalname;
-        const filePath = path.join(uploadDir, uniqueFilename);
-
-        // Save the file to disk
-        fs.writeFileSync(filePath, req.file.buffer);
-        console.log(`✅ File saved to: ${filePath}`);
-
-        imageUrl = `/storage/${uniqueFilename}`;
-        fileMetadata = {
-            filename: uniqueFilename,
-            mimetype: req.file.mimetype,
-            size: req.file.size,
-            path: filePath // Store the server path for internal use
-        };
-    }
+    const payLoad = jwt.verify(token, JWT_KEY);
+    console.log(payLoad)
+    let phone = payLoad.phoneNumber;
 
     const tracking_id = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
     const initialStatus = 'pending';
     const createdAt = new Date();
+
+    let imageUrl = `/storage/${req.file.originalname}`;
 
     const issue = {
         title,
@@ -249,46 +247,24 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
         location,
         imageUrl,
         status: initialStatus,
-        phone: phoneNumber,
+        phone: phone,
         tracking_id,
         created_at: createdAt,
         status_history: [{ status: initialStatus, changed_at: createdAt }],
-        metadata: {
-            ip: req.ip,
-            userAgent: req.headers['user-agent'],
-            uploadTime: createdAt,
-            fileInfo: fileMetadata // Use the manually created file metadata
-        }
     };
 
-    // Pass the image buffer to the verification function
-    const { status: verificationStatus, reasons } = verifyIssue(issue, req.file ? req.file.buffer : null);
-    issue.verification_status = verificationStatus;
-    issue.verification_reasons = reasons;
-
-    try {
-        if (verificationStatus === "rejected") {
-            await suspiciousCollection.insertOne(issue);
-            return res.json({ message: "Issue rejected due to verification failure", reasons });
-        } else {
-            await issuesCollection.insertOne(issue);
-            return res.json({
-                message: `Issue submitted (${verificationStatus})`,
-                tracking_id,
-                reasons
-            });
-        }
-    } catch (err) {
-        console.error("Error inserting issue:", err);
-        res.status(500).json({ message: 'Error submitting issue' });
-    }
+    await issuesCollection.insertOne(issue)
+    res.json(issue)
 });
 
 // ADMIN ROUTES 
 
 app.get("/admin/issues", async (req, res) => {
     try {
-        const issues = await Issue.find();
+        const db = client.db('spotlight_db');
+        const issuesCollection = db.collection('issues');
+        const issues = await issuesCollection.find().toArray();
+        console.log(issues)
         res.json(issues);
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -47,11 +47,11 @@ const LoginPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phone_number: phoneNumber }),
+        body: JSON.stringify({ phoneNumber: phoneNumber }),
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.message == 'OTP verified successfully.') {
+          if (data.message == "OTP verified successfully.") {
             setIsLoggedIn(true);
             setIsLoading(false);
             window.location.href = "/homepage";
@@ -67,7 +67,6 @@ const LoginPage = () => {
   };
 
   const loginfunc = (e) => {
-    console.log("hwoifn");
     const data = { phoneNumber: phoneNumber };
     fetch(`${ip}/login`, {
       method: "POST",
@@ -79,26 +78,31 @@ const LoginPage = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
         localStorage.setItem("token", data.token);
       })
       .catch((error) => console.error("Error:", error));
   };
 
   const handleAnonymousLogin = (e) => {
-    loginfunc();
-    e.preventDefault();
-    setIsLoading(true);
-
-    // --- Backend Script Simulation ---
-    // Simulate an anonymous login call.
-    // In a real application, this would be an API call to create or authenticate
-    // a temporary anonymous user.
-    setTimeout(() => {
-      loginfunc();
-      window.location.href = "/homepage";
-      return null;
-    }, 1500);
+    fetch(`${ip}/verify-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phoneNumber: phoneNumber }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message == "OTP verified successfully.") {
+          setIsLoggedIn(true);
+          setIsLoading(false);
+          loginfunc();
+          e.preventDefault();
+          setIsLoading(true);
+          window.location.href = "/homepage";
+        }
+      });
   };
 
   // Conditionally render the Home Page after successful login

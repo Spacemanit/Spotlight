@@ -316,7 +316,7 @@ function ResultsTable({ issues, searchType, searchValue, onBack }) {
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Category</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Title</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Description</th>
-                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Verification Status</th>
+                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Location</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Status</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Image</th>
                 </tr>
@@ -342,8 +342,8 @@ function ResultsTable({ issues, searchType, searchValue, onBack }) {
                       {issue.description || 'No Description'}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className={getVerificationStatusBadge(issue.verification_status || issue.verificationStatus)}>
-                        {issue.verification_status || issue.verificationStatus || 'Pending'}
+                      <span className="px-6 py-4 text-sm text-gray-900 text-center">
+                        {issue.location || 'N/A'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">

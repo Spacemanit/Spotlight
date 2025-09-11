@@ -1,8 +1,10 @@
 import React from "react";
 
 const HomePage = () => {
+  const token = localStorage.getItem('token');
+
   const openIssuePage = () => {
-    window.location.href = "/issue";
+    window.location.href = "/report";
   };
 
   const openTrackingPage = () => {

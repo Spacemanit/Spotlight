@@ -1,27 +1,35 @@
-import { useState } from 'react';
-import HomePage from './HomePage';
+import { useState } from "react";
+import HomePage from "./HomePage";
 
 const LoginPage = () => {
   const [isOTPSent, setIsOTPSent] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const ip = "http://localhost:3000";
 
   const handleGetOTP = (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // --- Backend Script Simulation ---
-    // In a real application, you would make an API call here to your backend script
-    // to send an OTP to the `phoneNumber` you've captured.
-    // e.g., fetch('/api/send-otp', { method: 'POST', body: JSON.stringify({ phoneNumber }) })
-    // For this example, we'll simulate a 1.5-second network delay.
-    setTimeout(() => {
-      console.log(`Sending OTP to ${phoneNumber}... (Simulated)`);
-      setIsOTPSent(true);
-      setIsLoading(false);
-    }, 1500);
+    fetch(`${ip}/send-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phone_number: phoneNumber }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setIsOTPSent(true);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setIsLoading(false);
+      });
   };
 
   const handleSignIn = (e) => {
@@ -34,13 +42,50 @@ const LoginPage = () => {
     // e.g., fetch('/api/verify-otp', { method: 'POST', body: JSON.stringify({ phoneNumber, otp }) })
     // We'll simulate a successful login after a 1.5-second delay.
     setTimeout(() => {
-      console.log('Verifying OTP and signing in... (Simulated)');
+      fetch(`${ip}/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phone_number: phoneNumber }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message == 'OTP verified successfully.') {
+            setIsLoggedIn(true);
+            setIsLoading(false);
+            window.location.href = "/homepage";
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setIsLoading(false);
+        });
       setIsLoggedIn(true);
       setIsLoading(false);
     }, 1500);
   };
 
+  const loginfunc = (e) => {
+    console.log("hwoifn");
+    const data = { phoneNumber: phoneNumber };
+    fetch(`${ip}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("token", data.token);
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
   const handleAnonymousLogin = (e) => {
+    loginfunc();
     e.preventDefault();
     setIsLoading(true);
 
@@ -49,23 +94,23 @@ const LoginPage = () => {
     // In a real application, this would be an API call to create or authenticate
     // a temporary anonymous user.
     setTimeout(() => {
-      console.log('Logging in anonymously... (Simulated)');
-      setIsLoggedIn(true);
-      setIsLoading(false);
+      loginfunc();
+      window.location.href = "/homepage";
+      return null;
     }, 1500);
   };
 
   // Conditionally render the Home Page after successful login
   if (isLoggedIn) {
-    localStorage.setItem('phone', phoneNumber);
-    window.location.href = '/homepage';
+    loginfunc();
+    window.location.href = "/homepage";
     return null;
   }
 
   const handleOtpChange = (e) => {
     const rawValue = e.target.value;
-    const numericValue = rawValue.replace(/\D/g, '').slice(0, 7);
-    const formattedValue = numericValue.split('').join(' • ');
+    const numericValue = rawValue.replace(/\D/g, "").slice(0, 7);
+    const formattedValue = numericValue.split("").join(" • ");
     setOtp(formattedValue);
   };
 
@@ -81,7 +126,9 @@ const LoginPage = () => {
 
         {/* Login Form Container */}
         <div className="w-full max-w-sm px-6 py-8">
-          <h2 className="text-4xl font-bold mb-8 text-[#3A364F]">Hello, <br /> Welcome Back</h2>
+          <h2 className="text-4xl font-bold mb-8 text-[#3A364F]">
+            Hello, <br /> Welcome Back
+          </h2>
 
           {/* Form Fields */}
           <form className="flex flex-col space-y-4">
@@ -102,6 +149,7 @@ const LoginPage = () => {
                 placeholder="0 • 0 • 0 • 0 • 0 • 0"
                 value={otp}
                 onChange={handleOtpChange}
+                disabled={isOTPSent ? false : true}
                 className="w-full px-4 py-3 border-2 tracking-[0.4em] text-center border-[#3A364F] focus:outline-none focus:border-blue-500 transition-all rounded-2xl"
               />
             </div>
@@ -112,7 +160,9 @@ const LoginPage = () => {
                 <input type="checkbox" className="rounded text-[#3A364F]" />
                 <span>Remember me</span>
               </label>
-              <a href="#" className="hover:underline">Resend OTP</a>
+              <a href="#" className="hover:underline">
+                Resend OTP
+              </a>
             </div>
 
             {/* Conditional button based on state and loading */}
@@ -121,18 +171,25 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   onClick={handleSignIn}
-                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${isLoading ? 'bg-[#3A364F] cursor-not-allowed' : 'bg-[#3A364F] hover:bg-[#2B283C] text-white'
-                    }`}
+                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${
+                    isLoading
+                      ? "bg-[#3A364F] cursor-not-allowed"
+                      : "bg-[#3A364F] hover:bg-[#2B283C] text-white"
+                  }`}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Signing In...' : 'Sign In'}
+                  {isLoading ? "Signing In..." : "Sign In"}
                 </button>
                 <button
                   onClick={handleAnonymousLogin}
-                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}
-                  disabled={isLoading}
+                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${
+                    isLoading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                  }`}
+                  disabled={phoneNumber.length == 10 ? false : true}
                 >
-                  {isLoading ? 'Loading...' : 'Anonymous'}
+                  {isLoading ? "Loading..." : "Anonymous"}
                 </button>
               </div>
             ) : (
@@ -140,18 +197,23 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   onClick={handleGetOTP}
-                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${isLoading ? 'bg-[#3A364F]cursor-not-allowed' : 'bg-[#3A364F] hover:bg-[#2B283C] text-white'
-                    }`}
-                  disabled={isLoading}
+                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${
+                    isLoading
+                      ? "bg-[#3A364F]cursor-not-allowed"
+                      : "bg-[#3A364F] hover:bg-[#2B283C] text-white"
+                  }`}
+                  disabled={phoneNumber.length == 10 ? false : true}
                 >
-                  {isLoading ? 'Getting OTP' : 'Get OTP'}
+                  {isLoading ? "Getting OTP" : "Get OTP"}
                 </button>
                 <a
                   href="#"
                   onClick={handleAnonymousLogin}
-                  className={`flex-1 flex items-center justify-center text-[#3A364F] text-sm transition-colors ${isLoading ? 'cursor-not-allowed' : 'hover:underline'}`}
+                  className={`flex-1 flex items-center justify-center text-[#3A364F] text-sm transition-colors ${
+                    isLoading ? "cursor-not-allowed" : "hover:underline"
+                  }`}
                 >
-                  {isLoading ? 'Loading...' : 'Login Anonymously'}
+                  {isLoading ? "Loading..." : "Login Anonymously"}
                 </a>
               </div>
             )}
@@ -162,7 +224,7 @@ const LoginPage = () => {
       {/* Right Column - Image Section */}
       <div className="hidden lg:block w-1/2 m-6 bg-black rounded-[66px]">
         <img
-          src="https://images.unsplash.com/photo-1587889311634-1c5c50c05973?q=80&w=1974&auto=format&fit=crop"
+          src="https://img.freepik.com/premium-photo/busy-indian-street-middle-day_896360-157.jpg?w=2000"
           alt="Beautiful Golden Temple at sunset"
           className="w-full h-full object-cover rounded-r-2xl"
         />

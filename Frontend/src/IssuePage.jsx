@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 
 const App = () => {
+  const token = localStorage.getItem("token");
   const ip = 'http://localhost:3000';
   const [issue, setIssue] = useState({
     title: "",
@@ -27,7 +28,7 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Issue submitted:", issue);
-    const data = {title: issue.title, description: issue.description, category: issue.issueType, location: issue.address1, phone: localStorage.getItem('phone')}
+    const data = {title: issue.title, description: issue.description, category: issue.issueType, location: issue.address1, token}
     fetch(`${ip}/issue/submit`, {
       method: "GET",
       headers: {
@@ -98,7 +99,7 @@ const App = () => {
   ];
   return (
     <div className="min-h-screen bg-white flex items-center justify-center font-sans">
-      <h1 className="text-3xl font-bold text-[#3A364F] mb-6">Spotlight</h1>
+      <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">Spotlight</h1>
       <div className="bg-white p-8 md:p-12 w-full max-w-2xl rounded-lg shadow-lg">
         <div className="bg-gray-50 p-6 rounded-xl">
           <h2 className="text-xl font-semibold text-[#3A364F] mb-4">
@@ -112,12 +113,21 @@ const App = () => {
               >
                 What type of issue do you have?
               </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={issue.title}
+                onChange={handleInputChange}
+                placeholder="Title"
+                className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
               <select
                 id="issueType"
                 name="issueType"
                 value={issue.issueType}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-3 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               >
                 <option value="">Select issue type</option>
                 {problems.map((problem, index) => (

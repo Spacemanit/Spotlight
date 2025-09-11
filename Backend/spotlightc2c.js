@@ -6,6 +6,8 @@ const { MongoClient } = require('mongodb');
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
 const geoip = require('geoip-lite'); // For IP geolocation check
 
 // ========== MULTER SETUP (for file uploads) ==========
@@ -32,6 +34,7 @@ app.use(express.static(path.join(__dirname, "../spotlightstorage")));
 // ========== DATABASE SETUP ==========
 const uri = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(uri);
+const TWOFACTOR_API_KEY = '43346a78-8e36-11f0-a562-0200cd936042';
 
 async function connectToDb() {
     try {
@@ -43,9 +46,73 @@ async function connectToDb() {
 }
 connectToDb();
 
+const KEY = 'This is just a basic secret key which is used to unlock the Json Web Token huihuihui'
+
 // ========== DEFAULT ROUTE ==========
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../Frontend/index.html"));
+});
+
+// ========== LOGIN PAGE ===========
+app.post('/send-otp', async (req, res) => {
+    const { phone_number } = req.body;
+
+    if (!phone_number) {
+        return res.status(400).json({ error: 'Phone number is required.' });
+    }
+
+    const apiUrl = `https://2factor.in/API/V1/${TWOFACTOR_API_KEY}/SMS/+91${phone_number}/AUTOGEN/`;
+    console.log(apiUrl)
+    try {
+        const response = await axios.get(apiUrl);
+        // The response from 2Factor.in
+        const apiResponse = response.data;
+        console.log(response.data)
+        // Check for success from the 2Factor.in API
+        if (apiResponse.Status === 'Success') {
+            res.json({
+                message: 'OTP sent successfully.',
+                details: apiResponse.Details // This is the session ID
+            });
+        } else {
+            res.status(400).json({ error: apiResponse.Details });
+        }
+    } catch (err) {
+        console.error('Error sending OTP:', err.message);
+        res.status(500).json({ error: 'Failed to send OTP.' });
+    }
+});
+
+app.post('/verify-otp', async (req, res) => {
+    const { details, otp } = req.body;
+
+    if (!details || !otp) {
+        return res.status(400).json({ error: 'Session details and OTP are required.' });
+    }
+
+    const apiUrl = `https://2factor.in/API/V1/${TWOFACTOR_API_KEY}/SMS/VERIFY/${details}/${otp}`;
+
+    try {
+        const response = await axios.get(apiUrl);
+        const apiResponse = response.data;
+
+        // Check for success from the 2Factor.in API
+        if (apiResponse.Status === 'Success') {
+            res.json({ message: 'OTP verified successfully.', valid: true });
+        } else {
+            res.status(400).json({ message: 'Invalid OTP.', valid: false });
+        }
+    } catch (err) {
+        console.error('Error verifying OTP:', err.message);
+        res.status(500).json({ error: 'Failed to verify OTP.' });
+    }
+});
+
+app.post('/login', async (req, res) => {
+    const { phoneNumber } = req.body;
+    const token = jwt.sign({ phoneNumber: phoneNumber}, KEY, { expiresIn: "2w" });
+    console.log(token)
+    res.json({ token });
 });
 
 // ========== VERIFICATION LOGIC ==========

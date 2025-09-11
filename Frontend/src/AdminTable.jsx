@@ -25,7 +25,7 @@ export default function AdminPage() {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [backendEndpoint] = ['http://localhost:3000/admin/issues']
+  const [backendEndpoint] = ['http://localhost:3000/admin/issues'];
 
   const entriesPerPage = 8;
   const totalEntries = issues.length;
@@ -47,7 +47,7 @@ export default function AdminPage() {
         const data = await response.json();
         setIssues(data);
       } catch (err) {
-        setError(err.message || 'Unknown error');
+        setError(err.message || 'Unknown error'); 
       } finally {
         setLoading(false);
       }
@@ -66,7 +66,7 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-xl text-gray-600">
+      <div className="min-h-screen flex items-center justify-center text-xl text-[#3A364F] font-sans">
         Loading...
       </div>
     );
@@ -74,30 +74,38 @@ export default function AdminPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-600 text-lg">
+      <div className="min-h-screen flex items-center justify-center text-[#3A364F] text-lg font-sans">
         Error: {error}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7fc] p-10 font-sans text-gray-800">
+    <div className="min-h-screen bg-[#FAF9FF] p-10 font-sans text-[#3A364F]">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-xl font-semibold">SpotLight</h1>
-        <h2 className="text-lg font-semibold">Admin Page</h2>
+      <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
+        <a
+          href="/spotlight"
+          className=""
+        >
+          Spotlight
+        </a>
+      </h1>
+
+      <div className="flex justify-center items-center mb-6 mt-12">
+        <h2 className="text-[30px] font-bold">Admin Page</h2>
       </div>
 
       {/* Summary Cards */}
-      <div className="flex space-x-6 mb-8">
+      <div className="flex space-x-6 mb-8 justify-center">
         {summaryData.map(({ label, count, color }) => (
           <div
             key={label}
-            className="flex items-center space-x-3 rounded-lg border border-gray-300 bg-white py-3 px-6"
+            className="flex items-center space-x-3 rounded-lg border border-[#E0DEF0] bg-[#FAF9FF] py-3 px-6"
           >
             <span className={`${color} block w-3 h-3 rounded-full`} />
             <div>
-              <div className="text-xs text-gray-600">{label}</div>
+              <div className="text-xs opacity-80">{label}</div>
               <div className="font-bold text-lg">{count}</div>
             </div>
           </div>
@@ -105,10 +113,10 @@ export default function AdminPage() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg border border-gray-300 shadow">
+      <div className="overflow-x-auto bg-[#FAF9FF] rounded-lg border border-[#E0DEF0]">
         <table className="min-w-full table-fixed text-left">
           <thead>
-            <tr className="border-b border-gray-300">
+            <tr className="border-b border-[#E0DEF0]">
               <th className="px-4 py-3 w-1/12">Date</th>
               <th className="px-4 py-3 w-1/12">Issue ID</th>
               <th className="px-4 py-3 w-1/12">Type</th>
@@ -123,7 +131,7 @@ export default function AdminPage() {
             {issues.map((issue, idx) => (
               <tr
                 key={`${issue.issueId}-${idx}`}
-                className="border-b border-gray-200 hover:bg-gray-50"
+                className="border-b border-[#E0DEF0] hover:bg-[#F1EEFF]"
               >
                 <td className="px-4 py-3">{issue.date}</td>
                 <td className="px-4 py-3">{issue.issueId}</td>
@@ -147,13 +155,13 @@ export default function AdminPage() {
                 <td className="px-4 py-3 text-center">
                   {issue.image ? (
                     <button
-                      className="text-blue-600 underline text-sm hover:text-blue-800 focus:outline-none"
+                      className="text-[#3A364F] underline text-sm hover:text-[#3A364F] focus:outline-none focus:ring-2 focus:ring-[#3A364F] focus:ring-offset-2 focus:ring-offset-[#FAF9FF]"
                       onClick={() => alert(`View image for issue ${issue.issueId}`)}
                     >
                       Click to view
                     </button>
                   ) : (
-                    <span className="text-gray-400">No image</span>
+                    <span className="opacity-60">No image</span>
                   )}
                 </td>
               </tr>
@@ -163,7 +171,7 @@ export default function AdminPage() {
       </div>
 
       {/* Pagination Footer */}
-      <div className="mt-4 flex justify-between text-gray-600 text-sm px-2">
+      <div className="mt-4 flex justify-between text-sm px-2">
         <div>
           Showing {Math.min(endIndex, totalEntries)} of {totalEntries} entries
         </div>
@@ -171,10 +179,8 @@ export default function AdminPage() {
           <button
             disabled={currentPage === 1}
             onClick={handlePrevPage}
-            className={`px-3 py-1 rounded border border-gray-300 ${
-              currentPage === 1
-                ? 'text-gray-400 cursor-not-allowed'
-                : 'hover:bg-gray-100'
+            className={`px-3 py-1 rounded border border-[#E0DEF0] ${
+              currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#F1EEFF]'
             }`}
           >
             &lt; Last page
@@ -182,10 +188,8 @@ export default function AdminPage() {
           <button
             disabled={currentPage === totalPages}
             onClick={handleNextPage}
-            className={`px-3 py-1 rounded border border-gray-300 ${
-              currentPage === totalPages
-                ? 'text-gray-400 cursor-not-allowed'
-                : 'hover:bg-gray-100'
+            className={`px-3 py-1 rounded border border-[#E0DEF0] ${
+              currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#F1EEFF]'
             }`}
           >
             Next page &gt;

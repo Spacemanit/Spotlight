@@ -102,10 +102,15 @@ const App = () => {
     "Other Problem",
   ];
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center font-sans">
-      <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">Spotlight</h1>
-      <div className="bg-white p-8 md:p-12 w-full max-w-2xl rounded-lg shadow-lg">
-        <div className="bg-gray-50 p-6 rounded-xl">
+    <div className="min-h-screen bg-[#FAF9FF] flex items-center justify-center font-sans">
+      <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
+  <a href="/spotlight" className="">
+    Spotlight
+  </a>
+</h1>
+
+      <div className="bg-[#FAF9FF] p-8 md:p-12 w-full max-w-2xl ">
+        <div className="bg-[#FAF9FF] p-6 rounded-xl">
           <h2 className="text-xl font-semibold text-[#3A364F] mb-4">
             About your issue
           </h2>
@@ -124,42 +129,78 @@ const App = () => {
                 value={issue.title}
                 onChange={handleInputChange}
                 placeholder="Title"
-                className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block rounded-[12px] w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
-              <select
-                id="issueType"
-                name="issueType"
-                value={issue.issueType}
-                onChange={handleInputChange}
-                className="mt-3 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                <option value="">Select issue type</option>
-                {problems.map((problem, index) => (
-                  <option key={index} value={problem}>
-                    {problem}
-                  </option>
-                ))}
-              </select>
+<div className="relative">
+  <select
+    id="issueType"
+    name="issueType"
+    value={issue.issueType}
+    onChange={handleInputChange}
+    className="mt-3 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] rounded-[15px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none"
+  >
+    <option value="">Select issue type</option>
+    {problems.map((problem, index) => (
+      <option key={index} value={problem}>
+        {problem}
+      </option>
+    ))}
+  </select>
+
+  {/* Custom chevron */}
+  <span
+    className="pointer-events-none absolute inset-y-0 flex items-center"
+    style={{ right: '5px' }}
+  >
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4 text-[#3A364F]"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+    </svg>
+  </span>
+</div>
+
             </div>
 
             <div className="space-y-4">
               <label className="block text-sm font-medium text-[#3A364F]">
                 Location and address of the issue
               </label>
-              <select
-                id="state"
-                name="state"
-                value={issue.state}
-                onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                <option value="">Select your state</option>
-                {states.map((state, index) => (
-                  <option key={index} value={state}>
-                    {state}
-                  </option>
-                ))}
-              </select>
+<div className="relative">
+  <select
+    id="issueType"
+    name="issueType"
+    value={issue.issueType}
+    onChange={handleInputChange}
+    className="mt-3 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] rounded-[15px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none"
+  >
+    <option value="">Select your state</option>
+    {problems.map((state, index) => (
+      <option key={index} value={state}>
+        {state}
+      </option>
+    ))}
+  </select>
+
+  {/* Custom chevron */}
+  <span
+    className="pointer-events-none absolute inset-y-0 flex items-center"
+    style={{ right: '5px' }}
+  >
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4 text-[#3A364F]"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+    </svg>
+  </span>
+</div>
+
               <input
                 type="text"
                 id="address1"
@@ -167,7 +208,7 @@ const App = () => {
                 value={issue.address1}
                 onChange={handleInputChange}
                 placeholder="Location line 1"
-                className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] rounded-[15px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
               <input
                 type="text"
@@ -176,7 +217,7 @@ const App = () => {
                 value={issue.address2}
                 onChange={handleInputChange}
                 placeholder="Location line 2"
-                className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px]  rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
               <div className="space-y-4 md:space-y-0 md:flex md:space-x-4">
                 <input
@@ -186,7 +227,7 @@ const App = () => {
                   value={issue.city}
                   onChange={handleInputChange}
                   placeholder="City"
-                  className="mt-1 block w-full md:w-1/2 px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full md:w-1/2 px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px]  rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
                 <input
                   type="text"
@@ -195,7 +236,7 @@ const App = () => {
                   value={issue.zipcode}
                   onChange={handleInputChange}
                   placeholder="Zipcode"
-                  className="mt-1 block w-full md:w-1/2 px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full md:w-1/2 px-3 py-2 bg-[#FAF9FF] border border-[#3A364F] border-[2px]  rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
             </div>
@@ -210,7 +251,7 @@ const App = () => {
               <div className="mt-2 flex items-center justify-center w-full">
                 <label
                   htmlFor="file-upload"
-                  className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border[#3A364F]"
+                  className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border-[#3A364F] border-[2px]"
                 >
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <svg
@@ -255,13 +296,13 @@ const App = () => {
                 rows="4"
                 value={issue.description}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 bg-white border border[#3A364F] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 bg-[#FAF9FF] border border-[#3A364F] border-[2px]  rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               ></textarea>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 px-6 bg-[#3A364F] text-white font-semibold rounded-lg shadow-md hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              className="w-full py-3 px-6 bg-[#3A364F] text-white font-semibold rounded-lg   hover:bg-[#282535] focus:outline-none focus:ring-2 focus:ring-[#282535] focus:ring-offset-2"
             >
               Continue
             </button>

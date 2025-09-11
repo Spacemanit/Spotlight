@@ -89,24 +89,12 @@ const LoginPage = () => {
   };
 
   const handleAnonymousLogin = (e) => {
-    fetch(`${ip}/verify-otp`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ phoneNumber: phoneNumber }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message == "OTP verified successfully.") {
-          setIsLoggedIn(true);
-          setIsLoading(false);
-          loginfunc();
-          e.preventDefault();
-          setIsLoading(true);
-          window.location.href = "/homepage";
-        }
-      });
+    setIsLoggedIn(true);
+    setIsLoading(false);
+    loginfunc();
+    e.preventDefault();
+    setIsLoading(true);
+    window.location.href = "/homepage";
   };
 
   // Conditionally render the Home Page after successful login
@@ -126,7 +114,7 @@ const LoginPage = () => {
 
   // Render the login form otherwise
   return (
-    <div className="flex min-h-screen font-sans">
+    <div className="flex min-h-screen font-sans bg-[#FAF9FF]">
       {/* Left Column - Form Section */}
       <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center items-center rounded-l-2xl">
         {/* Spotlight Title */}
@@ -181,22 +169,20 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   onClick={handleSignIn}
-                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${
-                    isLoading
+                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${isLoading
                       ? "bg-[#3A364F] cursor-not-allowed"
                       : "bg-[#3A364F] hover:bg-[#2B283C] text-white"
-                  }`}
+                    }`}
                   disabled={isLoading}
                 >
                   {isLoading ? "Signing In..." : "Sign In"}
                 </button>
                 <button
                   onClick={handleAnonymousLogin}
-                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${
-                    isLoading
+                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${isLoading
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                  }`}
+                    }`}
                   disabled={phoneNumber.length == 10 ? false : true}
                 >
                   {isLoading ? "Loading..." : "Anonymous"}
@@ -207,11 +193,10 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   onClick={handleGetOTP}
-                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${
-                    isLoading
+                  className={`flex-1 px-4 py-3 font-semibold rounded-2xl shadow-md transition-colors ${isLoading
                       ? "bg-[#3A364F]cursor-not-allowed"
                       : "bg-[#3A364F] hover:bg-[#2B283C] text-white"
-                  }`}
+                    }`}
                   disabled={phoneNumber.length == 10 ? false : true}
                 >
                   {isLoading ? "Getting OTP" : "Get OTP"}
@@ -219,9 +204,8 @@ const LoginPage = () => {
                 <a
                   href="#"
                   onClick={handleAnonymousLogin}
-                  className={`flex-1 flex items-center justify-center text-[#3A364F] text-sm transition-colors ${
-                    isLoading ? "cursor-not-allowed" : "hover:underline"
-                  }`}
+                  className={`flex-1 flex items-center justify-center text-[#3A364F] text-sm transition-colors ${isLoading ? "cursor-not-allowed" : "hover:underline"
+                    }`}
                 >
                   {isLoading ? "Loading..." : "Login Anonymously"}
                 </a>

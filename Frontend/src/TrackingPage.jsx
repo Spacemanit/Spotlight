@@ -313,9 +313,9 @@ function ResultsTable({ issues, searchType, searchValue, onBack }) {
                 <tr>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Date</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Issue ID</th>
-                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Type</th>
+                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Category</th>
+                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Title</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Description</th>
-                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Zipcode</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Verification Status</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Status</th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">Image</th>
@@ -331,15 +331,15 @@ function ResultsTable({ issues, searchType, searchValue, onBack }) {
                       {issue.tracking_id || issue.issue_id || 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900 capitalize text-center">
-                      {issue.type || 'N/A'}
+                      {issue.category || 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600 max-w-xs text-center">
                       <div className="truncate" title={issue.description}>
-                        {issue.description || 'No description available'}
+                        {issue.title || 'No title'}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900 text-center">
-                      {issue.zipcode || issue.zip_code || 'N/A'}
+                      {issue.description || 'No Description'}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className={getVerificationStatusBadge(issue.verification_status || issue.verificationStatus)}>

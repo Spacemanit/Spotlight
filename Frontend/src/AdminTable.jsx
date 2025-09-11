@@ -163,9 +163,9 @@ export default function SpotLightIssuesTable() {
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Date</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Issue ID</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Type</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Category</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Title</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Description</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Zipcode</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Verification status</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Image</th>
@@ -176,9 +176,9 @@ export default function SpotLightIssuesTable() {
                   <tr key={index} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm text-gray-900">{issue.date}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{issue.issueId}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">{issue.type}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{issue.description}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">{issue.zipcode}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{issue.category}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{issue.title}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{issue.description}</td>
                     <td className="px-6 py-4">
                       <span className={getVerificationStatusBadge(issue.verificationStatus)}>
                         {issue.verificationStatus}

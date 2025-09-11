@@ -1,4 +1,3 @@
-// ========== IMPORTS ==========
 const express = require('express');
 const app = express();
 exports.app = app;
@@ -10,24 +9,19 @@ const geoip = require('geoip-lite'); // For IP geolocation check
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const fs = require('fs');
-const exifParser = require('exif-parser'); // ✅ ADDED: For reading image metadata
+const exifParser = require('exif-parser'); //  reading image metadata
 
-// ✅ REMOVED: const geoip = require('geoip-lite');
 
-// Create the storage directory if it doesn't exist
 const uploadDir = path.join(__dirname, 'spotlight/storage');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
     console.log(`✅ Created storage directory at: ${uploadDir}`);
 }
 
-// ========== MULTER SETUP (for file uploads) ==========
-// ✅ CHANGED: Switched to memoryStorage to allow EXIF parsing before saving the file to disk.
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 
-// ========== MIDDLEWARE ==========
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,7 +29,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/storage', express.static(uploadDir));
 app.use(express.static(path.join(__dirname, "../spotlightstorage")));
 
-// ========== DATABASE SETUP ==========
 const uri = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(uri);
 const TWOFACTOR_API_KEY = '43346a78-8e36-11f0-a562-0200cd936042';
@@ -52,24 +45,28 @@ connectToDb();
 
 const KEY = 'This is just a basic secret key which is used to unlock the Json Web Token huihuihui'
 
-// ========== DEFAULT ROUTE ==========
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
 
-// ========== VERIFICATION LOGIC ==========
-// Rule-based checks to validate reports
+
+
+
+//------------------------------------------------------------------------------------
+
+
+// validating inputs
 function verifyIssue(issue, metadata) {
     let reasons = [];
     let status = "verified";
 
-    // 1. Phone number validation (Indian format)
+    // phone validation 
     if (issue.phone && !/^[6-9]\d{9}$/.test(issue.phone)) {
         reasons.push("Invalid phone number");
         status = "suspicious";
     }
 
-    // 2. Image validation (type + size)
+    // image type , size
     if (metadata.fileInfo) {
         const { mimetype, size } = metadata.fileInfo;
         if (!['image/jpeg', 'image/png', 'image/jpg'].includes(mimetype)) {
@@ -82,7 +79,7 @@ function verifyIssue(issue, metadata) {
         }
     }
 
-    // 3. Location check vs IP geolocation
+    // Location check vs IP geolocation
     const geo = geoip.lookup(metadata.ip);
     if (geo && issue.location) {
         if (!issue.location.toLowerCase().includes(geo.country.toLowerCase())) {
@@ -91,7 +88,7 @@ function verifyIssue(issue, metadata) {
         }
     }
 
-    // 4. Escalate if too many failures
+    // 4. edge case
     if (reasons.length >= 3) {
         status = "rejected";
     }
@@ -99,7 +96,7 @@ function verifyIssue(issue, metadata) {
     return { status, reasons };
 }
 
-// ========== LOGIN ROUTES (Unchanged) ==========
+// ========== LOGIN ROUTES (Unchanged) ========== - FRONTEND DEV
 app.post('/send-otp', async (req, res) => {
     const { phone_number } = req.body;
     if (!phone_number) {
@@ -147,7 +144,7 @@ app.post('/login', async (req, res) => {
     res.json({ token });
 });
 
-// ========== VERIFICATION LOGIC (Completely Overhauled) ==========
+// VERIFICATION LOGIC NEW 
 function verifyIssue(issue, fileBuffer) {
     let reasons = [];
     let status = "verified";
@@ -158,20 +155,19 @@ function verifyIssue(issue, fileBuffer) {
         status = "suspicious";
     }
 
-    // ✅ REPLACED GEOIP WITH EXIF CHECKS
     if (fileBuffer) {
         try {
             const parser = exifParser.create(fileBuffer);
             const result = parser.parse();
             const tags = result.tags;
 
-            // 2a. GPS Location Check from EXIF data
+            // GPS Location Check from EXIF data
             if (tags && tags.GPSLatitude && tags.GPSLongitude) {
                 const velloreLat = 12.9165;
                 const velloreLon = 79.1325;
                 const lat = tags.GPSLatitude;
                 const lon = tags.GPSLongitude;
-                // A simple threshold check (~50km radius around Vellore)
+                
                 const distanceThreshold = 0.5;
                 if (Math.abs(lat - velloreLat) > distanceThreshold || Math.abs(lon - velloreLon) > distanceThreshold) {
                     reasons.push(`Photo location (${lat.toFixed(4)}, ${lon.toFixed(4)}) is too far from Vellore.`);
@@ -182,7 +178,7 @@ function verifyIssue(issue, fileBuffer) {
                 status = "suspicious";
             }
 
-            // 2b. Timestamp Check from EXIF data
+            // Timestamp Check from EXIF data
             const photoTimestamp = tags.DateTimeOriginal || tags.CreateDate; // Unix timestamp
             if (photoTimestamp) {
                 const photoDate = new Date(photoTimestamp * 1000);
@@ -210,7 +206,6 @@ function verifyIssue(issue, fileBuffer) {
     return { status, reasons };
 }
 
-// ========== USER ROUTES ==========
 // Submit new issue
 app.post('/issue/submit', upload.single('image'), async (req, res) => {
     const db = client.db('spotlight_db');
@@ -218,10 +213,9 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
     const suspiciousCollection = db.collection('suspicious_issues');
 
     const { title, description, category, location, token } = req.body;
-    const phoneNumber = jwt.decode(token, KEY).phoneNumber;
-    console.log(token)
-    console.log(phoneNumber)
-    // ✅ ADDED: Manually handle file saving since we use memoryStorage for EXIF parsing
+    const phone = jwt.decode(token, KEY).phoneNumber;
+
+// EXIF PARSING
     let imageUrl = null;
     let uniqueFilename = null;
     let fileMetadata = null;
@@ -263,11 +257,11 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
             ip: req.ip,
             userAgent: req.headers['user-agent'],
             uploadTime: createdAt,
-            fileInfo: fileMetadata // ✅ CHANGED: Use the manually created file metadata
+            fileInfo: fileMetadata // Use the manually created file metadata
         }
     };
 
-    // ✅ CHANGED: Pass the image buffer to the verification function
+    // Pass the image buffer to the verification function
     const { status: verificationStatus, reasons } = verifyIssue(issue, req.file ? req.file.buffer : null);
     issue.verification_status = verificationStatus;
     issue.verification_reasons = reasons;
@@ -290,10 +284,8 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
     }
 });
 
-// ================= ADMIN ROUTES (Unchanged) =================
-// Note: These routes still appear to use Mongoose syntax (e.g., Issue.find())
-// which may conflict with the native MongoDB driver used elsewhere.
-// This part of the code has not been changed.
+// ADMIN ROUTES 
+
 app.get("/admin/issues", async (req, res) => {
     try {
         const issues = await Issue.find();
@@ -335,7 +327,7 @@ app.get("/admin/issues/stats", async (req, res) => {
     }
 });
 
-// ========== TRACKING ROUTES (Unchanged) ==========
+//TRACKING ROUTES
 app.get('/issue/track/:tracking_id', async (req, res) => {
     const db = client.db('spotlight_db');
     const issuesCollection = db.collection('issues');
@@ -365,7 +357,7 @@ app.get('/issue/phone/:phone', async (req, res) => {
     }
 });
 
-// ========== SERVER START ==========
+// SERVER START 
 app.listen(3000, "0.0.0.0", () => {
     console.log("🚀 Server running on port 3000");
 });

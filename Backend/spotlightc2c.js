@@ -212,7 +212,8 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
     const issuesCollection = db.collection('issues');
     const suspiciousCollection = db.collection('suspicious_issues');
 
-    const { title, description, category, location, phone } = req.body;
+    const { title, description, category, location, token } = req.body;
+    const phone = jwt.decode(token, KEY).phoneNumber;
 
 // EXIF PARSING
     let imageUrl = null;

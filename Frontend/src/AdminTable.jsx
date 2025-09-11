@@ -47,7 +47,7 @@ export default function AdminPage() {
         const data = await response.json();
         setIssues(data);
       } catch (err) {
-        setError(err.message || 'Unknown error'); 
+        setError(err.message || 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -145,11 +145,13 @@ export default function AdminPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  {issue.image ? (
+                  {issue.imageUrl ? (
                     <button
                       className="text-[#3A364F] underline text-sm hover:text-[#3A364F] focus:outline-none focus:ring-2 focus:ring-[#3A364F] focus:ring-offset-2 focus:ring-offset-[#FAF9FF]"
-                      onClick={() => window.open(`http://localhost:3000/${(issue.imageUrl || '').slice(3, issue.image.length)}`, '_blank')}
-                      alt={issue.imageUrl}
+                      onClick={() => {
+                        console.log(`http://localhost:3000/${(issue.imageUrl || '').slice(3, issue.imageUrl.length + 1)}`)
+                        window.open(`http://localhost:3000/${(issue.imageUrl || '').slice(3, issue.imageUrl.length + 1)}`, '_blank')
+                      }}
                     >
                       Click to view
                     </button>
@@ -172,18 +174,16 @@ export default function AdminPage() {
           <button
             disabled={currentPage === 1}
             onClick={handlePrevPage}
-            className={`px-3 py-1 rounded border border-[#E0DEF0] ${
-              currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#F1EEFF]'
-            }`}
+            className={`px-3 py-1 rounded border border-[#E0DEF0] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#F1EEFF]'
+              }`}
           >
             &lt; Last page
           </button>
           <button
             disabled={currentPage === totalPages}
             onClick={handleNextPage}
-            className={`px-3 py-1 rounded border border-[#E0DEF0] ${
-              currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#F1EEFF]'
-            }`}
+            className={`px-3 py-1 rounded border border-[#E0DEF0] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#F1EEFF]'
+              }`}
           >
             Next page &gt;
           </button>

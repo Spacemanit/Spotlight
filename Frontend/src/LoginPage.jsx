@@ -61,6 +61,9 @@ const LoginPage = () => {
           }
           else{
             alert('Invalid OTP!')
+            setTimeout(() => {
+              window.location.reload();
+          }, 1500);
           }
         })
         .catch((error) => {

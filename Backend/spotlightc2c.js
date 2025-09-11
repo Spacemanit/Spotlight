@@ -11,18 +11,12 @@ const axios = require('axios');
 const fs = require('fs');
 const exifParser = require('exif-parser'); //  reading image metadata
 
-const uploadDir = path.join(__dirname, 'spotlight/storage');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-    console.log(`✅ Created storage directory at: ${uploadDir}`);
-}
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/uploads', express.static(uploadDir));
-app.use(express.static(path.join(__dirname, "../uploads")));
+app.use(express.static(path.join(__dirname, "../Frontend")));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 const uri = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(uri);

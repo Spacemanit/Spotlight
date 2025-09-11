@@ -16,6 +16,11 @@ const App = () => {
     description: "",
   });
 
+    const [result, setResult] = useState(null);      // holds server response on success [2]
+  const [loading, setLoading] = useState(false);   // loading flag for submit [2]
+  const [error, setError] = useState(null);  
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setIssue((prev) => ({ ...prev, [name]: value }));
@@ -44,23 +49,9 @@ const App = () => {
       .then((data) => {
         console.log(data.message)
         if (data?.message == "Issue submitted successfully") {
-          return (
-            <div className="min-h-screen bg-[#FAF9FF] relative">
-              {/* Top-left Spotlight header (kept) */}
-              <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
-                <a href="/spotlight">Spotlight</a>
-              </h1>
-
-              {/* Centered text in Noto Sans */}
-              <div className="min-h-screen flex items-center justify-center">
-                <p className="font-noto text-2xl text-[#3A364F] text-center">
-                  Your submission was successful! Your issue ID is {data.issueId}.
-                </p>
-              </div>
-            </div>
-          );
+          setResult(data)
         } else {
-          alert(data.message);
+          setError(data?.message || "Submission failed");
         }
         console.log(data);
       })
@@ -114,6 +105,23 @@ const App = () => {
     "Encroachment and lack of urban planning",
     "Other Problem",
   ];
+
+  
+  if (result) {
+    return (
+      <div className="min-h-screen bg-[#FAF9FF] relative">
+        <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
+          <a href="/spotlight">Spotlight</a>
+        </h1>
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="font-noto text-2xl text-[#3A364F] text-center">
+            Your submission was successful! Your issue ID is {result.issue.tracking_id}.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF9FF] flex items-center justify-center font-sans">
       <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
@@ -249,7 +257,7 @@ const App = () => {
                   value={issue.zipcode}
                   onChange={handleInputChange}
                   placeholder="Zipcode"
-                  className="mt-1 block w-full md:w-1/2 px-3 py-2 bg-[#FAF9FF] border border-[#3A364F] border-[2px]  rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full md:w-1/2 px-3 py-2 bg-[#FAF9FF] border border-[#3A364F]  rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
             </div>
@@ -264,7 +272,7 @@ const App = () => {
               <div className="mt-2 flex items-center justify-center w-full">
                 <label
                   htmlFor="file-upload"
-                  className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border-[#3A364F] border-[2px]"
+                  className="flex flex-col items-center justify-center w-full h-20 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border-[#3A364F] border-[2px]"
                 >
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <svg
@@ -309,13 +317,13 @@ const App = () => {
                 rows="4"
                 value={issue.description}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 bg-[#FAF9FF] border border-[#3A364F] border-[2px]  rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 bg-[#FAF9FF] border border-[#3A364F] rounded-[15px]  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               ></textarea>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 px-6 bg-[#3A364F] text-white font-semibold rounded-lg   hover:bg-[#282535] focus:outline-none focus:ring-2 focus:ring-[#282535] focus:ring-offset-2"
+              className="w-full py-3 px-6 bg-[#3A364F] text-white font-semibold rounded-lg hover:bg-[#282535] focus:outline-none focus:ring-2 focus:ring-[#282535] focus:ring-offset-2"
             >
               Continue
             </button>

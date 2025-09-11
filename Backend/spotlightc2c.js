@@ -11,7 +11,6 @@ const axios = require('axios');
 const fs = require('fs');
 const exifParser = require('exif-parser'); //  reading image metadata
 
-
 const uploadDir = path.join(__dirname, 'spotlight/storage');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -22,8 +21,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/storage', express.static(uploadDir));
-app.use(express.static(path.join(__dirname, "../spotlightstorage")));
+app.use('/uploads', express.static(uploadDir));
+app.use(express.static(path.join(__dirname, "../uploads")));
 
 const uri = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(uri);
@@ -137,7 +136,7 @@ app.post('/verify-otp', async (req, res) => {
 });
 app.post('/login', async (req, res) => {
     const { phoneNumber } = req.body;
-    const payLoad = {phone:phoneNumber}
+    const payLoad = { phone: phoneNumber }
     const token = jwt.sign(payLoad, JWT_KEY, { expiresIn: "600s" });
     res.json({ token });
 });
@@ -165,7 +164,7 @@ function verifyIssue(issue, fileBuffer) {
                 const velloreLon = 79.1325;
                 const lat = tags.GPSLatitude;
                 const lon = tags.GPSLongitude;
-                
+
                 const distanceThreshold = 0.5;
                 if (Math.abs(lat - velloreLat) > distanceThreshold || Math.abs(lon - velloreLon) > distanceThreshold) {
                     reasons.push(`Photo location (${lat.toFixed(4)}, ${lon.toFixed(4)}) is too far from Vellore.`);
@@ -224,7 +223,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 20*1024*1024 }
+    limits: { fileSize: 20 * 1024 * 1024 }
 });
 // Submit new issue
 app.post('/issue/submit', upload.single('image'), async (req, res) => {
@@ -246,8 +245,10 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
     const tracking_id = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
     const initialStatus = 'pending';
     const createdAt = new Date();
-
-    let imageUrl = `../uploads/${file.filename}`;
+    let imageUrl = null;
+    if (file) {
+        imageUrl = `../uploads/${file.filename}`;
+    }
 
     const issue = {
         title,
@@ -263,7 +264,7 @@ app.post('/issue/submit', upload.single('image'), async (req, res) => {
     };
 
     await issuesCollection.insertOne(issue)
-    res.json(issue)
+    res.json({issue: issue, message: "Issue submitted successfully"});
 });
 
 // ADMIN ROUTES 

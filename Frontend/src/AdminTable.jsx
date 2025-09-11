@@ -122,7 +122,6 @@ export default function AdminPage() {
               <th className="px-4 py-3 w-1/12">Type</th>
               <th className="px-4 py-3 w-1/12">Title</th>
               <th className="px-4 py-3 w-2/12">Description</th>
-              <th className="px-4 py-3 w-2/12">Verification status</th>
               <th className="px-4 py-3 w-1/12">Status</th>
               <th className="px-4 py-3 w-1/12 text-center">Image</th>
             </tr>
@@ -133,18 +132,11 @@ export default function AdminPage() {
                 key={`${issue.issueId}-${idx}`}
                 className="border-b border-[#E0DEF0] hover:bg-[#F1EEFF]"
               >
-                <td className="px-4 py-3">{issue.date}</td>
-                <td className="px-4 py-3">{issue.issueId}</td>
-                <td className="px-4 py-3">{issue.type}</td>
+                <td className="px-4 py-3">{(issue.created_at || '').slice(0, 10)}</td>
+                <td className="px-4 py-3">{issue.tracking_id}</td>
+                <td className="px-4 py-3">{issue.category}</td>
                 <td className="px-4 py-3">{issue.title}</td>
                 <td className="px-4 py-3">{issue.description}</td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${verificationStatusColors[issue.verificationStatus] || 'bg-gray-200 text-gray-800'}`}
-                  >
-                    {issue.verificationStatus}
-                  </span>
-                </td>
                 <td className="px-4 py-3">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusColors[issue.status] || 'bg-gray-200 text-gray-800'}`}
@@ -156,12 +148,13 @@ export default function AdminPage() {
                   {issue.image ? (
                     <button
                       className="text-[#3A364F] underline text-sm hover:text-[#3A364F] focus:outline-none focus:ring-2 focus:ring-[#3A364F] focus:ring-offset-2 focus:ring-offset-[#FAF9FF]"
-                      onClick={() => alert(`View image for issue ${issue.issueId}`)}
+                      onClick={() => window.open(`http://localhost:3000/${(issue.imageUrl || '').slice(3, issue.image.length)}`, '_blank')}
+                      alt={issue.imageUrl}
                     >
                       Click to view
                     </button>
                   ) : (
-                    <span className="opacity-60">No image</span>
+                    <span className="opacity-60">No Image</span>
                   )}
                 </td>
               </tr>

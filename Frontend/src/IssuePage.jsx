@@ -42,10 +42,23 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.message == "Login Successful") {
-          console.log(data);
-          localStorage.setItem("username", data.username);
-          location = "chat.html";
+        console.log(data.message)
+        if (data?.message == "Issue submitted successfully") {
+          return (
+            <div className="min-h-screen bg-[#FAF9FF] relative">
+              {/* Top-left Spotlight header (kept) */}
+              <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
+                <a href="/spotlight">Spotlight</a>
+              </h1>
+
+              {/* Centered text in Noto Sans */}
+              <div className="min-h-screen flex items-center justify-center">
+                <p className="font-noto text-2xl text-[#3A364F] text-center">
+                  Your submission was successful! Your issue ID is {data.issueId}.
+                </p>
+              </div>
+            </div>
+          );
         } else {
           alert(data.message);
         }
@@ -104,10 +117,10 @@ const App = () => {
   return (
     <div className="min-h-screen bg-[#FAF9FF] flex items-center justify-center font-sans">
       <h1 className="absolute text-3xl font-bold text-[#3A364F] top-8 left-8">
-  <a href="/spotlight" className="">
-    Spotlight
-  </a>
-</h1>
+        <a href="/spotlight" className="">
+          Spotlight
+        </a>
+      </h1>
 
       <div className="bg-[#FAF9FF] p-8 md:p-12 w-full max-w-2xl ">
         <div className="bg-[#FAF9FF] p-6 rounded-xl">
@@ -131,37 +144,37 @@ const App = () => {
                 placeholder="Title"
                 className="mt-1 block rounded-[12px] w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
-<div className="relative">
-  <select
-    id="issueType"
-    name="issueType"
-    value={issue.issueType}
-    onChange={handleInputChange}
-    className="mt-3 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] rounded-[15px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none"
-  >
-    <option value="">Select issue type</option>
-    {problems.map((problem, index) => (
-      <option key={index} value={problem}>
-        {problem}
-      </option>
-    ))}
-  </select>
+              <div className="relative">
+                <select
+                  id="issueType"
+                  name="issueType"
+                  value={issue.issueType}
+                  onChange={handleInputChange}
+                  className="mt-3 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] rounded-[15px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none"
+                >
+                  <option value="">Select issue type</option>
+                  {problems.map((problem, index) => (
+                    <option key={index} value={problem}>
+                      {problem}
+                    </option>
+                  ))}
+                </select>
 
-  {/* Custom chevron */}
-  <span
-    className="pointer-events-none absolute inset-y-0 flex items-center"
-    style={{ right: '5px' }}
-  >
-    <svg
-      aria-hidden="true"
-      className="h-4 w-4 text-[#3A364F]"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
-    </svg>
-  </span>
-</div>
+                {/* Custom chevron */}
+                <span
+                  className="pointer-events-none absolute inset-y-0 flex items-center"
+                  style={{ right: '5px' }}
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="h-4 w-4 text-[#3A364F]"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+                  </svg>
+                </span>
+              </div>
 
             </div>
 
@@ -169,37 +182,37 @@ const App = () => {
               <label className="block text-sm font-medium text-[#3A364F]">
                 Location and address of the issue
               </label>
-<div className="relative">
-  <select
-    id="issueType"
-    name="issueType"
-    value={issue.issueType}
-    onChange={handleInputChange}
-    className="mt-3 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] rounded-[15px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none"
-  >
-    <option value="">Select your state</option>
-    {problems.map((state, index) => (
-      <option key={index} value={state}>
-        {state}
-      </option>
-    ))}
-  </select>
+              <div className="relative">
+                <select
+                  id="issueType"
+                  name="issueType"
+                  value={issue.issueType}
+                  onChange={handleInputChange}
+                  className="mt-3 block w-full px-3 py-2 bg-[#FAF9FF] border-[#3A364F] border-[2px] rounded-[15px] focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none"
+                >
+                  <option value="">Select your state</option>
+                  {states.map((state, index) => (
+                    <option key={index} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
 
-  {/* Custom chevron */}
-  <span
-    className="pointer-events-none absolute inset-y-0 flex items-center"
-    style={{ right: '5px' }}
-  >
-    <svg
-      aria-hidden="true"
-      className="h-4 w-4 text-[#3A364F]"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
-    </svg>
-  </span>
-</div>
+                {/* Custom chevron */}
+                <span
+                  className="pointer-events-none absolute inset-y-0 flex items-center"
+                  style={{ right: '5px' }}
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="h-4 w-4 text-[#3A364F]"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+                  </svg>
+                </span>
+              </div>
 
               <input
                 type="text"

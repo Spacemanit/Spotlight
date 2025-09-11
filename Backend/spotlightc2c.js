@@ -116,7 +116,8 @@ app.post('/send-otp', async (req, res) => {
     }
 });
 app.post('/verify-otp', async (req, res) => {
-    const { details, otp } = req.body;
+    const details = req.body.details;
+    const otp = req.body.otp;
     if (!details || !otp) {
         return res.status(400).json({ error: 'Session details and OTP are required.' });
     }
@@ -136,7 +137,8 @@ app.post('/verify-otp', async (req, res) => {
 });
 app.post('/login', async (req, res) => {
     const { phoneNumber } = req.body;
-    const token = jwt.sign({ phoneNumber: phoneNumber }, JWT_KEY, { expiresIn: "10m" });
+    const payLoad = {phone:phoneNumber}
+    const token = jwt.sign(payLoad, JWT_KEY, { expiresIn: "600s" });
     res.json({ token });
 });
 
@@ -225,20 +227,27 @@ const upload = multer({
     limits: { fileSize: 20*1024*1024 }
 });
 // Submit new issue
-app.post('/issue/submit', upload.single('images'), async (req, res) => {
+app.post('/issue/submit', upload.single('image'), async (req, res) => {
     const db = client.db('spotlight_db');
     const issuesCollection = db.collection('issues');
 
-    const { title, description, category, location, token } = req.body;
+    // const { title, description, category, location, token } = req.body;
+    const title = req.body.title;
+    const description = req.body.description;
+    const category = req.body.category;
+    const location = req.body.location;
+    const file = req.file;
+
+    const token = req.body.token;
     const payLoad = jwt.verify(token, JWT_KEY);
     console.log(payLoad)
-    let phone = payLoad.phoneNumber;
+    let phone = payLoad.phone;
 
     const tracking_id = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
     const initialStatus = 'pending';
     const createdAt = new Date();
 
-    let imageUrl = `/storage/${req.file.originalname}`;
+    let imageUrl = `../uploads/${file.filename}`;
 
     const issue = {
         title,

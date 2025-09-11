@@ -7,6 +7,8 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
+  const [formattedotp, setFormattedOtp] = useState("");
+  const [details, setDetails] = useState("");
   const ip = "http://localhost:3000";
 
   const handleGetOTP = (e) => {
@@ -22,7 +24,7 @@ const LoginPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        setDetails(data.details);
         setIsOTPSent(true);
         setIsLoading(false);
       })
@@ -47,22 +49,24 @@ const LoginPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phoneNumber: phoneNumber }),
+        body: JSON.stringify({ details: details, otp: otp }),
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.message == "OTP verified successfully.") {
+          if (data.valid) {
             setIsLoggedIn(true);
             setIsLoading(false);
             window.location.href = "/homepage";
+            return null;
+          }
+          else{
+            alert('Invalid OTP!')
           }
         })
         .catch((error) => {
           console.error("Error:", error);
           setIsLoading(false);
         });
-      setIsLoggedIn(true);
-      setIsLoading(false);
     }, 1500);
   };
 
@@ -115,8 +119,9 @@ const LoginPage = () => {
   const handleOtpChange = (e) => {
     const rawValue = e.target.value;
     const numericValue = rawValue.replace(/\D/g, "").slice(0, 7);
+    setOtp(numericValue);
     const formattedValue = numericValue.split("").join(" • ");
-    setOtp(formattedValue);
+    setFormattedOtp(formattedValue);
   };
 
   // Render the login form otherwise
@@ -152,7 +157,7 @@ const LoginPage = () => {
               <input
                 type="text"
                 placeholder="0 • 0 • 0 • 0 • 0 • 0"
-                value={otp}
+                value={formattedotp}
                 onChange={handleOtpChange}
                 disabled={isOTPSent ? false : true}
                 className="w-full px-4 py-3 border-2 tracking-[0.4em] text-center border-[#3A364F] focus:outline-none focus:border-blue-500 transition-all rounded-2xl"

@@ -5,5 +5,7 @@ nodemon
 cors
 tailwindcss
 @tailwindcss/vite
-exifParser
+exif-parser
 path
+fs
+lucide-react

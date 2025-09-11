@@ -6,6 +6,7 @@ const { MongoClient } = require('mongodb');
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
+const geoip = require('geoip-lite'); // For IP geolocation check
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const fs = require('fs');
@@ -55,6 +56,48 @@ const KEY = 'This is just a basic secret key which is used to unlock the Json We
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
+
+// ========== VERIFICATION LOGIC ==========
+// Rule-based checks to validate reports
+function verifyIssue(issue, metadata) {
+    let reasons = [];
+    let status = "verified";
+
+    // 1. Phone number validation (Indian format)
+    if (issue.phone && !/^[6-9]\d{9}$/.test(issue.phone)) {
+        reasons.push("Invalid phone number");
+        status = "suspicious";
+    }
+
+    // 2. Image validation (type + size)
+    if (metadata.fileInfo) {
+        const { mimetype, size } = metadata.fileInfo;
+        if (!['image/jpeg', 'image/png', 'image/jpg'].includes(mimetype)) {
+            reasons.push("Invalid image type");
+            status = "suspicious";
+        }
+        if (size < 10000) { // less than 10KB
+            reasons.push("Image too small");
+            status = "suspicious";
+        }
+    }
+
+    // 3. Location check vs IP geolocation
+    const geo = geoip.lookup(metadata.ip);
+    if (geo && issue.location) {
+        if (!issue.location.toLowerCase().includes(geo.country.toLowerCase())) {
+            reasons.push(`Location mismatch: user said ${issue.location}, IP shows ${geo.country}`);
+            status = "suspicious";
+        }
+    }
+
+    // 4. Escalate if too many failures
+    if (reasons.length >= 3) {
+        status = "rejected";
+    }
+
+    return { status, reasons };
+}
 
 // ========== LOGIN ROUTES (Unchanged) ==========
 app.post('/send-otp', async (req, res) => {
@@ -324,3 +367,5 @@ app.get('/issue/phone/:phone', async (req, res) => {
 app.listen(3000, "0.0.0.0", () => {
     console.log("🚀 Server running on port 3000");
 });
+
+

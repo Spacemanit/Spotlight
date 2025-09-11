@@ -226,7 +226,7 @@ const LoginPage = () => {
         <img
           src="https://img.freepik.com/premium-photo/busy-indian-street-middle-day_896360-157.jpg?w=2000"
           alt="Beautiful Golden Temple at sunset"
-          className="w-full h-full object-cover rounded-r-2xl"
+          className="w-full h-full object-cover rounded-[60px]"
         />
       </div>
     </div>

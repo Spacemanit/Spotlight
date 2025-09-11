@@ -30,7 +30,7 @@ const App = () => {
     console.log("Issue submitted:", issue);
     const data = {title: issue.title, description: issue.description, category: issue.issueType, location: issue.address1, token}
     fetch(`${ip}/issue/submit`, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },

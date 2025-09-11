@@ -28,13 +28,17 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Issue submitted:", issue);
-    const data = {title: issue.title, description: issue.description, category: issue.issueType, location: issue.address1, token}
+    const formData = new FormData();
+    formData.append("title", issue.title);
+    formData.append("description", issue.description);
+    formData.append("category", issue.issueType);
+    formData.append("location", issue.address1);
+    formData.append("token", token);
+    formData.append("image", issue.file);
+
     fetch(`${ip}/issue/submit`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     })
       .then((response) => response.json())
       .then((data) => {

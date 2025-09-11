@@ -222,6 +222,41 @@ app.post('/admin/issues/update-status', async (req, res) => {
     }
 });
 
+// ========== TRACKING ROUTES ==========
+// Track issue by tracking_id
+app.get('/issue/track/:tracking_id', async (req, res) => {
+    const db = client.db('spotlight_db');
+    const issuesCollection = db.collection('issues');
+
+    try {
+        const issue = await issuesCollection.findOne({ tracking_id: req.params.tracking_id });
+        if (!issue) {
+            return res.status(404).json({ message: "No issue found with this tracking ID" });
+        }
+        res.json(issue);
+    } catch (err) {
+        console.error("Error tracking issue:", err);
+        res.status(500).json({ message: "Error fetching issue" });
+    }
+});
+
+// Get all issues by phone number
+app.get('/issue/phone/:phone', async (req, res) => {
+    const db = client.db('spotlight_db');
+    const issuesCollection = db.collection('issues');
+
+    try {
+        const issues = await issuesCollection.find({ phone: req.params.phone }).toArray();
+        if (issues.length === 0) {
+            return res.status(404).json({ message: "No issues found for this phone number" });
+        }
+        res.json(issues);
+    } catch (err) {
+        console.error("Error fetching issues by phone:", err);
+        res.status(500).json({ message: "Error fetching issues" });
+    }
+});
+
 // ========== SERVER START ==========
 app.listen(3000, "0.0.0.0", () => {
     console.log("🚀 Server running on port 3000");
